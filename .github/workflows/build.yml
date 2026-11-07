@@ -12,10 +12,17 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Setup Xcode Environment
+        run: |
+          sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+          swift --version
+
       - name: Build and Package App Bundle
         run: |
           set -euo pipefail
+          chmod +x script/*.sh
           source script/app_metadata.sh
+          
           DIST_DIR="$PWD/dist"
           APP_BUNDLE="$DIST_DIR/$APP_NAME.app"
           APP_CONTENTS="$APP_BUNDLE/Contents"
@@ -25,7 +32,7 @@ jobs:
           INFO_PLIST="$APP_CONTENTS/Info.plist"
           ENTITLEMENTS_PATH="$PWD/Resources/AirTranslate.entitlements"
 
-          echo "Building binary with release configuration..."
+          echo "Compiling Swift release binary..."
           swift build -c release
           BUILD_BINARY="$(swift build -c release --show-bin-path)/$APP_NAME"
 
@@ -35,16 +42,17 @@ jobs:
           mkdir -p "$APP_RESOURCES"
           cp "$BUILD_BINARY" "$APP_BINARY"
           chmod +x "$APP_BINARY"
+          
           if [ -f "$PWD/Resources/AppIcon.icns" ]; then
             cp "$PWD/Resources/AppIcon.icns" "$APP_RESOURCES/AppIcon.icns"
           fi
 
-          ./script/write_info_plist.sh "$INFO_PLIST" local
+          bash script/write_info_plist.sh "$INFO_PLIST" local
 
-          echo "Codesigning app bundle..."
+          echo "Signing application bundle..."
           /usr/bin/codesign --force --deep --options runtime --entitlements "$ENTITLEMENTS_PATH" --sign - "$APP_BUNDLE"
 
-          echo "Compressing app bundle..."
+          echo "Zipping app bundle..."
           cd "$DIST_DIR"
           zip -r -y "$GITHUB_WORKSPACE/AirTranslate-Vietnamese.zip" "$APP_NAME.app"
 
