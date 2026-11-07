@@ -470,6 +470,7 @@ final class QwenRealtimeTranslationService: @unchecked Sendable {
         switch code {
         case "en": "English"
         case "ko": "Korean"
+        case "vi", "vi-VN": "Vietnamese"
         case "ja": "Japanese"
         case "zh": "Chinese"
         case "es": "Spanish"

@@ -1440,6 +1440,8 @@ enum AppText {
             localized(english: "English", korean: "영어", japanese: "英語", chineseSimplified: "英语")
         case "ko-KR":
             localized(english: "Korean", korean: "한국어", japanese: "韓国語", chineseSimplified: "韩语")
+        case "vi-VN", "vi":
+            localized(english: "Vietnamese", korean: "베트남어", japanese: "ベトナム語", chineseSimplified: "越南语")
         case "ja-JP":
             localized(english: "Japanese", korean: "일본어", japanese: "日本語", chineseSimplified: "日语")
         case "zh-CN":
