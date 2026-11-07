@@ -12,9 +12,12 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup Xcode Environment
+      - name: Select Latest Xcode (macOS 15.2+ SDK)
         run: |
-          sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+          LATEST_XCODE=$(find /Applications -maxdepth 1 -name "Xcode*.app" | sort -V | tail -n 1)
+          echo "Using Xcode at: $LATEST_XCODE"
+          sudo xcode-select -s "$LATEST_XCODE/Contents/Developer"
+          xcodebuild -version
           swift --version
 
       - name: Build and Package App Bundle
@@ -32,8 +35,8 @@ jobs:
           INFO_PLIST="$APP_CONTENTS/Info.plist"
           ENTITLEMENTS_PATH="$PWD/Resources/AirTranslate.entitlements"
 
-          echo "Compiling Swift release binary..."
-          swift build -c release
+          echo "Compiling Swift release binary with macOS 15.2 target..."
+          swift build -c release -Xswiftc -target -Xswiftc arm64-apple-macos15.2
           BUILD_BINARY="$(swift build -c release --show-bin-path)/$APP_NAME"
 
           echo "Assembling $APP_NAME.app..."
