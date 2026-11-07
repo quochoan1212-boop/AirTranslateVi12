@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
     name: "AirTranslate",
     platforms: [
-        .macOS(.v26)
+        .macOS(.v15)
     ],
     products: [
         .executable(name: "AirTranslate", targets: ["AirTranslate"])
